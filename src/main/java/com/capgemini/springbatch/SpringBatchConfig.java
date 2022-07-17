@@ -21,9 +21,6 @@ public class SpringBatchConfig {
     private final StepBuilderFactory steps;
     private final RestTemplate restTemplate;
 
-    @Value("${com.capgemini.producer.api}")
-    private String apiUrl;
-
     public SpringBatchConfig(JobBuilderFactory jobs, StepBuilderFactory steps, RestTemplate restTemplate) {
         this.jobs = jobs;
         this.steps = steps;
