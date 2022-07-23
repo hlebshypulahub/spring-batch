@@ -23,6 +23,8 @@ dependencies {
     implementation 'javax.validation:validation-api:2.0.1.Final'
     implementation 'org.springframework.boot:spring-boot-starter-web:2.7.0'
     implementation 'org.hibernate:hibernate-validator:8.0.0.CR1'
+
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 }
 
 tasks.named('test') {

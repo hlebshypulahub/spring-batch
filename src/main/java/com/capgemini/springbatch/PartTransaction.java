@@ -5,7 +5,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @SuppressWarnings("restriction")
-//@XmlRootElement(name = "transactionRecord")
 public class PartTransaction {
 
     @Digits(integer = 9, fraction = 0, message = "id must be an integer up to 9 digits")

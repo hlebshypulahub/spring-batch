@@ -2,17 +2,20 @@ package com.capgemini.springbatch;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.item.*;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.client.RestTemplate;
 
+@Configuration
+@EnableBatchProcessing
 public class SpringBatchConfig {
 
     private final String[] FIELD_NAMES = new String[]{"id", "name", "producerCode"};
@@ -20,9 +23,7 @@ public class SpringBatchConfig {
     private final JobBuilderFactory jobs;
     private final StepBuilderFactory steps;
     private final RestTemplate restTemplate;
-
-    @Value("${com.capgemini.producer.api}")
-    private String apiUrl;
+    private String apiUrl = "http://localhost:8090/api/v1/parts";
 
     public SpringBatchConfig(JobBuilderFactory jobs, StepBuilderFactory steps, RestTemplate restTemplate) {
         this.jobs = jobs;
@@ -51,16 +52,9 @@ public class SpringBatchConfig {
     }
 
     @Bean
-    public ItemWriter<Part> itemWriter(/*Marshaller marshaller*/) {
+    public ItemWriter<Part> itemWriter() {
         return new CustomPartWriter(apiUrl, restTemplate);
     }
-
-//    @Bean
-//    public Marshaller marshaller() {
-//        Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
-//        marshaller.setClassesToBeBound(Part.class);
-//        return marshaller;
-//    }
 
     @Bean
     protected Step step1(ItemReader<PartTransaction> itemReader,
@@ -73,5 +67,13 @@ public class SpringBatchConfig {
     @Bean(name = "firstBatchJob")
     public Job job(@Qualifier("step1") Step step1) {
         return jobs.get("firstBatchJob").start(step1).build();
+    }
+
+    public String getApiUrl() {
+        return apiUrl;
+    }
+
+    public void setApiUrl(String apiUrl) {
+        this.apiUrl = apiUrl;
     }
 }

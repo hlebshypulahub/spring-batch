@@ -22,6 +22,7 @@ public class BatchService {
         JobLauncher jobLauncher = (JobLauncher) context.getBean("jobLauncher");
         Job job = (Job) context.getBean("firstBatchJob");
         System.out.println("Starting the batch job");
+
         try {
             JobExecution execution = jobLauncher.run(job, new JobParameters());
             System.out.println("Job Status : " + execution.getStatus());
@@ -31,5 +32,4 @@ public class BatchService {
             System.out.println("Job failed");
         }
     }
-
 }

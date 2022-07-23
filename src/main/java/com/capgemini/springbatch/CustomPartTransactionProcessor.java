@@ -27,7 +27,7 @@ public class CustomPartTransactionProcessor implements ItemProcessor<PartTransac
             return part;
         } else {
             for (ConstraintViolation<?> violation : violations) {
-                logger.error("value: " + violation.getInvalidValue() + ", " +violation.getMessage());
+                logger.error(violation.getMessage() + ", value: " + violation.getInvalidValue());
             }
             return null;
         }

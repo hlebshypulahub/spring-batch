@@ -11,7 +11,7 @@ public class CustomPartWriter implements ItemWriter<Part> {
     private final RestTemplate restTemplate;
 
     CustomPartWriter(String apiUrl, RestTemplate restTemplate) {
-        this.apiUrl = "http://localhost:8090/api/v1/parts";
+        this.apiUrl = apiUrl;
         this.restTemplate = restTemplate;
     }
 
