@@ -19,16 +19,14 @@ import org.springframework.web.client.RestTemplate;
 public class SpringBatchConfig {
 
     private final String[] FIELD_NAMES = new String[]{"id", "name", "producerCode"};
+    public final static String API_URL = "http://localhost:8090/api/v1/parts";
 
     private final JobBuilderFactory jobs;
     private final StepBuilderFactory steps;
-    private final RestTemplate restTemplate;
-    private String apiUrl = "http://localhost:8090/api/v1/parts";
 
-    public SpringBatchConfig(JobBuilderFactory jobs, StepBuilderFactory steps, RestTemplate restTemplate) {
+    public SpringBatchConfig(JobBuilderFactory jobs, StepBuilderFactory steps) {
         this.jobs = jobs;
         this.steps = steps;
-        this.restTemplate = restTemplate;
     }
 
     @Bean
@@ -53,15 +51,13 @@ public class SpringBatchConfig {
 
     @Bean
     public ItemWriter<Part> itemWriter() {
-        return new CustomPartWriter(apiUrl, restTemplate);
+        return new CustomPartWriter(API_URL, restTemplate());
     }
 
     @Bean
-    protected Step step1(ItemReader<PartTransaction> itemReader,
-                         ItemProcessor<PartTransaction, Part> itemProcessor,
-                         ItemWriter<Part> itemWriter) {
+    protected Step step1() {
         return steps.get("step1").<PartTransaction, Part>chunk(100)
-                    .reader(itemReader).processor(itemProcessor).writer(itemWriter).build();
+                    .reader(itemReader()).processor(itemProcessor()).writer(itemWriter()).build();
     }
 
     @Bean(name = "firstBatchJob")
@@ -69,11 +65,8 @@ public class SpringBatchConfig {
         return jobs.get("firstBatchJob").start(step1).build();
     }
 
-    public String getApiUrl() {
-        return apiUrl;
-    }
-
-    public void setApiUrl(String apiUrl) {
-        this.apiUrl = apiUrl;
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 }
